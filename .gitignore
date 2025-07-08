@@ -1,0 +1,9 @@
+# Ignorar la carpeta del entorno virtual
+venv/
+
+# Ignorar la carpeta del dataset de imágenes
+dataset/
+
+# Archivos de cache de Python
+__pycache__/
+*.pyc
