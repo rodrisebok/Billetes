@@ -1,9 +1,0 @@
-1000_pesos
-100_pesos
-10_pesos
-2000_pesos
-200_pesos
-20_pesos
-500_pesos
-50_pesos
-fondo_images
