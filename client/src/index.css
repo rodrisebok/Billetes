@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Tailwind base */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos globales */
+body {
+  @apply bg-gray-soft text-gray-dark font-sans;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animaciones personalizadas */
+@layer utilities {
+  .fade-in {
+    @apply opacity-0 translate-y-4 transition-all duration-700 ease-out;
+  }
+  .fade-in.show {
+    @apply opacity-100 translate-y-0;
+  }
+}

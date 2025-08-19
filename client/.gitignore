@@ -1,0 +1,57 @@
+# Archivo .gitignore para el proyecto de Billetes IA
+
+# # # Frontend (React + Vite) # # #
+
+# Dependencias
+FrontEnd/node_modules/
+
+# Archivos de build y distribución
+FrontEnd/dist/
+FrontEnd/.vite/
+
+# Logs
+FrontEnd/npm-debug.log*
+FrontEnd/yarn-error.log*
+FrontEnd/yarn.lock
+
+# Archivos de entorno local (¡muy importante no subirlos!)
+.env
+.env.local
+.env.*.local
+
+# Archivos de configuración del editor
+.vscode/
+.idea/
+
+
+# # # Backend (Python + TensorFlow) # # #
+
+# Entorno virtual
+BackEnd/venv/
+
+# Archivos compilados de Python
+BackEnd/__pycache__/
+*.pyc
+
+# Modelo de IA entrenado (son archivos muy pesados)
+BackEnd/*.keras
+BackEnd/*.h5
+BackEnd/*.pt
+
+# Archivos generados por el entrenamiento
+BackEnd/class_names.txt
+BackEnd/runs/
+
+
+# # # Datos y Assets (NUEVO) # # #
+
+# Videos (suelen ser pesados)
+videos/
+*.mp4
+*.mov
+*.avi
+
+
+# # # Archivos del sistema operativo # # #
+.DS_Store
+Thumbs.db
