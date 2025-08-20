@@ -1,5 +1,6 @@
 import tensorflow as tf
-from tensorflow.keras import layers, models
+from tensorflow import keras # Usar keras desde tensorflow es una buena práctica
+from tensorflow.keras import layers, models, Input # ¡Importante añadir Input!
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.applications import MobileNetV2
 import pathlib
@@ -58,14 +59,17 @@ validation_dataset = validation_dataset.cache().prefetch(buffer_size=AUTOTUNE)
 
 # --- DEFINICIÓN DEL MODELO ---
 
+# --- CORRECCIÓN CLAVE ---
 # 1. Capa de Aumentación de Datos (Data Augmentation)
-#    Crea imágenes variadas en tiempo real para un entrenamiento más robusto.
+#    Se añade una capa keras.Input() al inicio para definir explícitamente
+#    la forma de entrada, solucionando el error del "ciclo".
 data_augmentation = Sequential(
   [
-    layers.RandomFlip("horizontal", input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
+    Input(shape=(IMG_HEIGHT, IMG_WIDTH, 3)), # <--- AQUÍ ESTÁ LA LÍNEA AÑADIDA
+    layers.RandomFlip("horizontal"),
     layers.RandomRotation(0.1),
     layers.RandomZoom(0.1),
-    # ¡NUEVA CAPA! Convierte aleatoriamente el 20% de las imágenes a escala de grises.
+    # ¡Tu capa! Convierte aleatoriamente el 20% de las imágenes a escala de grises.
     layers.RandomGrayscale(0.2),
   ]
 )

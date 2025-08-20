@@ -8,3 +8,4 @@
 20_pesos
 500_pesos
 50_pesos
+fondo
