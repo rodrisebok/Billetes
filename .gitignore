@@ -50,3 +50,6 @@ pnpm-debug.log*
 # VS Code
 .vscode/
 .history/
+
+# SQLite Database
+/server/database.db
