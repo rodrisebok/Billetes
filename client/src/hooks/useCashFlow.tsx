@@ -71,6 +71,31 @@ export const useCashFlow = () => {
     }
   };
 
+  // ✅ NUEVA FUNCIÓN: updateMovement
+  const updateMovement = async (movementId: number, newAmount: number): Promise<Movement> => {
+    try {
+      const response = await fetch(`${API_BASE}/movements/${movementId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount: newAmount }),
+      });
+
+      if (!response.ok) throw new Error('Error al actualizar movimiento');
+      
+      const updatedMovement: Movement = await response.json();
+      
+      // Recargar datos para obtener el balance y movimientos actualizados
+      await loadInitialData();
+      
+      return updatedMovement;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error desconocido');
+      throw err;
+    }
+  };
+
   const loadInitialData = async (): Promise<void> => {
     setLoading(true);
     setError(null);
@@ -102,6 +127,7 @@ export const useCashFlow = () => {
     loading,
     error,
     addMovement,
+    updateMovement, // ✅ EXPORTAR LA NUEVA FUNCIÓN
     refresh,
     fetchBalance,
     fetchDenominations,

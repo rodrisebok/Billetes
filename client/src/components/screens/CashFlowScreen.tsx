@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { ArrowLeft, DollarSign, Scan } from 'lucide-react';
 import { useCashFlow } from '../../hooks/useCashFlow';
+import { Movement } from '../../types/cashFlow';
 import BalanceCard from '../ui/BalanceCard';
 import ActionGrid from '../ui/ActionGrid';
 import DenominationsList from '../ui/DenominationsList';
 import MovementsList from '../ui/MovementsList';
 import AddMovementModal from '../ui/AddMovementModal';
+import EditMovementModal from '../ui/EditMovementModal'; // ✅ NUEVO IMPORT
 
 interface CashFlowScreenProps {
   onBack: () => void;
@@ -19,15 +21,37 @@ const CashFlowScreen: React.FC<CashFlowScreenProps> = ({ onBack }) => {
     loading,
     error,
     addMovement,
+    updateMovement, // ✅ NUEVA FUNCIÓN DEL HOOK
     refresh
   } = useCashFlow();
 
   const [showAddMovement, setShowAddMovement] = useState(false);
+  const [showEditMovement, setShowEditMovement] = useState(false); // ✅ NUEVO STATE
+  const [selectedMovement, setSelectedMovement] = useState<Movement | null>(null); // ✅ NUEVO STATE
   const [showDenominations, setShowDenominations] = useState(false);
   const [balanceVisible, setBalanceVisible] = useState(true);
 
   const handleAddMovement = async (movementData: { amount: number; type: 'ingreso' | 'gasto' }) => {
     await addMovement(movementData);
+  };
+
+  // ✅ NUEVA FUNCIÓN: Manejar edición de movimientos
+  const handleEditMovement = (movement: Movement) => {
+    setSelectedMovement(movement);
+    setShowEditMovement(true);
+  };
+
+  // ✅ NUEVA FUNCIÓN: Actualizar movimiento
+  const handleUpdateMovement = async (movementId: number, newAmount: number) => {
+    await updateMovement(movementId, newAmount);
+    setShowEditMovement(false);
+    setSelectedMovement(null);
+  };
+
+  // ✅ NUEVA FUNCIÓN: Cerrar modal de edición
+  const handleCloseEditModal = () => {
+    setShowEditMovement(false);
+    setSelectedMovement(null);
   };
 
   const handleRefresh = async () => {
@@ -130,13 +154,24 @@ const CashFlowScreen: React.FC<CashFlowScreenProps> = ({ onBack }) => {
         />
 
         {/* Historial de Movimientos */}
-        <MovementsList movements={movements} />
+        <MovementsList 
+          movements={movements}
+          onEditMovement={handleEditMovement} // ✅ PASAR LA FUNCIÓN DE EDITAR
+        />
 
         {/* Modal para Agregar Movimiento */}
         <AddMovementModal
           visible={showAddMovement}
           onClose={() => setShowAddMovement(false)}
           onSubmit={handleAddMovement}
+        />
+
+        {/* ✅ NUEVO MODAL: Modal para Editar Movimiento */}
+        <EditMovementModal
+          movement={selectedMovement}
+          isOpen={showEditMovement}
+          onClose={handleCloseEditModal}
+          onUpdate={handleUpdateMovement}
         />
       </div>
     </div>

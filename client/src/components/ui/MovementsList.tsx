@@ -1,13 +1,14 @@
 import React from 'react';
-import { History, TrendingUp, TrendingDown, Scan, Edit3 } from 'lucide-react';
+import { History, TrendingUp, TrendingDown, Scan, Edit3, Settings } from 'lucide-react';
 import { Movement } from '../../types/cashFlow';
 import { formatCurrency, formatDate } from '../../utils/currency';
 
 interface MovementsListProps {
   movements: Movement[];
+  onEditMovement: (movement: Movement) => void;
 }
 
-const MovementsList: React.FC<MovementsListProps> = ({ movements }) => {
+const MovementsList: React.FC<MovementsListProps> = ({ movements, onEditMovement }) => {
   return (
     <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-6 shadow-xl">
       <div className="flex items-center space-x-2 mb-4">
@@ -33,9 +34,9 @@ const MovementsList: React.FC<MovementsListProps> = ({ movements }) => {
           movements.map((movement) => (
             <div 
               key={movement.id} 
-              className="flex items-center justify-between bg-white/5 rounded-xl p-3 hover:bg-white/10 transition-colors duration-200"
+              className="flex items-center justify-between bg-white/5 rounded-xl p-3 hover:bg-white/10 transition-colors duration-200 group"
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 flex-1">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                   movement.type === 'ingreso' 
                     ? 'bg-emerald-500' 
@@ -47,7 +48,7 @@ const MovementsList: React.FC<MovementsListProps> = ({ movements }) => {
                   }
                 </div>
                 
-                <div>
+                <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <p className={`font-semibold ${
                       movement.type === 'ingreso' ? 'text-emerald-400' : 'text-red-400'
@@ -71,14 +72,25 @@ const MovementsList: React.FC<MovementsListProps> = ({ movements }) => {
                 </div>
               </div>
               
-              <div className="text-right">
-                <span className={`text-xs px-2 py-1 rounded-full ${
-                  movement.type === 'ingreso' 
-                    ? 'bg-emerald-500/20 text-emerald-400' 
-                    : 'bg-red-500/20 text-red-400'
-                }`}>
-                  {movement.type === 'ingreso' ? 'Ingreso' : 'Gasto'}
-                </span>
+              <div className="flex items-center space-x-2">
+                <div className="text-right">
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    movement.type === 'ingreso' 
+                      ? 'bg-emerald-500/20 text-emerald-400' 
+                      : 'bg-red-500/20 text-red-400'
+                  }`}>
+                    {movement.type === 'ingreso' ? 'Ingreso' : 'Gasto'}
+                  </span>
+                </div>
+                
+                {/* ✅ BOTÓN DE EDITAR */}
+                <button
+                  onClick={() => onEditMovement(movement)}
+                  className="w-8 h-8 bg-blue-500/20 hover:bg-blue-500/40 text-blue-400 rounded-lg flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
+                  title="Editar movimiento"
+                >
+                  <Settings className="w-4 h-4" />
+                </button>
               </div>
             </div>
           ))
