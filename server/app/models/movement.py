@@ -8,3 +8,12 @@ class Movement(db.Model):
     movement_type = db.Column(db.String(50), nullable=False)  # "ingreso" o "gasto"
     origin = db.Column(db.String(50), nullable=False) # "manual" o "escaneo"
     cash_box_id = db.Column(db.Integer, db.ForeignKey('cash_box.id'), nullable=False)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'amount': self.amount,
+            'type': self.movement_type,  # ✅ Cambiado: movement_type
+            'origin': self.origin,
+            'date': self.date.isoformat() if self.date else None
+        }

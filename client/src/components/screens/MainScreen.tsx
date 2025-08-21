@@ -5,9 +5,10 @@ import ActionButton from '../ui/ActionButton';
 
 interface MainScreenProps {
   onCameraClick: () => void;
+  onCashFlowClick: () => void;
 }
 
-const MainScreen: React.FC<MainScreenProps> = ({ onCameraClick }) => {
+const MainScreen: React.FC<MainScreenProps> = ({ onCameraClick, onCashFlowClick }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 p-6">
       <div className="max-w-md mx-auto">
@@ -27,9 +28,10 @@ const MainScreen: React.FC<MainScreenProps> = ({ onCameraClick }) => {
           <ActionButton
             icon={Wallet}
             title="Flujo de Caja"
-            subtitle="Próximamente"
-            disabled={true}
-            ariaLabel="Flujo de caja - Próximamente disponible"
+            subtitle="Gestiona tu efectivo"
+            onClick={onCashFlowClick}
+            active={true}
+            ariaLabel="Abrir gestión de flujo de caja"
           />
 
           <ActionButton

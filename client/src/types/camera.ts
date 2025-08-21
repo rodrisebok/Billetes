@@ -10,5 +10,6 @@ export interface CameraConstraints {
     height?: number;
   };
 }
+export type ExtendedViewType = ViewType | 'cashflow';
 
 export type ViewType = 'main' | 'camera' | 'wallet' | 'transactions' | 'help';

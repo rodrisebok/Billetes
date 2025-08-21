@@ -53,3 +53,6 @@ pnpm-debug.log*
 
 # SQLite Database
 /server/database.db
+
+# Base de datos local
+database.db

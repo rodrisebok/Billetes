@@ -14,13 +14,13 @@ def get_or_create_cash_box():
     """Función auxiliar para obtener o crear la única caja de la app."""
     cash_box = CashBox.query.first()
     if not cash_box:
-        cash_box = CashBox(total_balance=0.0)
+        cash_box = CashBox(total_amount=0.0)  # ✅ Cambiado: total_amount
         db.session.add(cash_box)
         # Asegurarnos de que las denominaciones iniciales existan
         denominations = [10, 20, 50, 100, 200, 500, 1000, 2000]
         for value in denominations:
             if not Denomination.query.filter_by(value=value).first():
-                new_denomination = Denomination(value=value, quantity=0)
+                new_denomination = Denomination(value=value, count=0, cash_box_id=cash_box.id)
                 db.session.add(new_denomination)
         db.session.commit()
     return cash_box
@@ -30,7 +30,7 @@ def get_balance():
     """Obtiene el saldo total de la caja."""
     try:
         cash_box = get_or_create_cash_box()
-        return jsonify({'total_balance': cash_box.total_balance})
+        return jsonify({'total_balance': cash_box.total_amount})  # ✅ Cambiado: total_amount
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -55,24 +55,25 @@ def add_movement():
         
         # Actualizar saldo
         if movement_type == 'ingreso':
-            cash_box.total_balance += amount
+            cash_box.total_amount += amount  # ✅ Cambiado: total_amount
         else: # gasto
-            if cash_box.total_balance < amount:
+            if cash_box.total_amount < amount:  # ✅ Cambiado: total_amount
                 return jsonify({'error': 'Saldo insuficiente'}), 400
-            cash_box.total_balance -= amount
+            cash_box.total_amount -= amount  # ✅ Cambiado: total_amount
 
         # Crear registro del movimiento
         new_movement = Movement(
             amount=amount,
-            type=movement_type,
-            origin='manual'
+            movement_type=movement_type,  # ✅ Cambiado: movement_type
+            origin='manual',
+            cash_box_id=cash_box.id  # ✅ Agregado: cash_box_id requerido
         )
         db.session.add(new_movement)
         db.session.commit()
 
         return jsonify({
             'message': 'Movimiento registrado con éxito',
-            'new_balance': cash_box.total_balance
+            'new_balance': cash_box.total_amount  # ✅ Cambiado: total_amount
         }), 201
     except ValueError:
         return jsonify({'error': 'Monto inválido'}), 400
@@ -97,21 +98,22 @@ def add_from_scan():
             return jsonify({'error': f'La denominación de {amount} no es válida'}), 400
 
         # Actualizar saldo y cantidad de billetes
-        cash_box.total_balance += amount
-        denomination.quantity += 1
+        cash_box.total_amount += amount  # ✅ Cambiado: total_amount
+        denomination.count += 1
         
         # Crear movimiento
         new_movement = Movement(
             amount=amount,
-            type='ingreso',
-            origin='escaneo'
+            movement_type='ingreso',  # ✅ Cambiado: movement_type
+            origin='escaneo',
+            cash_box_id=cash_box.id  # ✅ Agregado: cash_box_id requerido
         )
         db.session.add(new_movement)
         db.session.commit()
         
         return jsonify({
             'message': f'Billete de ${amount} agregado a la caja',
-            'new_balance': cash_box.total_balance
+            'new_balance': cash_box.total_amount  # ✅ Cambiado: total_amount
         }), 201
 
     except ValueError:
@@ -148,17 +150,17 @@ def update_movement(movement_id):
         # Calcular la diferencia para ajustar el saldo total
         old_amount = movement.amount
         
-        if movement.type == 'ingreso':
+        if movement.movement_type == 'ingreso':
             difference = new_amount - old_amount
         else: # gasto
             difference = old_amount - new_amount
 
         # Validar que el saldo no quede negativo
-        if cash_box.total_balance + difference < 0:
+        if cash_box.total_amount + difference < 0:  # ✅ Cambiado: total_amount
             return jsonify({'error': 'La modificación resulta en saldo negativo'}), 400
             
         # Actualizar saldo y movimiento
-        cash_box.total_balance += difference
+        cash_box.total_amount += difference  # ✅ Cambiado: total_amount
         movement.amount = new_amount
         movement.date = datetime.utcnow() # Actualizamos la fecha de modificación
         
